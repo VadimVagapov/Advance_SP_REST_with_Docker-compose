@@ -10,13 +10,17 @@
 <h1>User, welcome spring boot security page!</h1>
 <table border="1" cellpadding="5">
     <tr>
+        <th>Id</th>
         <th>Username</th>
         <th>Lastname</th>
         <th>Email</th>
+        <th>Role</th>
     </tr>
+        <td><span th:text="${user.id}"> Id </span></td>
         <td><span th:text="${user.username}"> Username </span></td>
         <td><span th:text="${user.lastname}"> Lastname </span></td>
         <td><span th:text="${user.email}"> Email </span></td>
+        <td><a th:each="role: ${user.getRoles()}" th:text="${role.getName.replace('ROLE_', '').concat('  ')}"></a></td>
     </tr>
 </table>
 <br><hr><br>

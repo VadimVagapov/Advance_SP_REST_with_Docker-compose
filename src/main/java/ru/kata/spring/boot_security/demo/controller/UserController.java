@@ -73,6 +73,8 @@ public class UserController {
     public String editUserForm(@RequestParam(name="id") long id, Model model) {
         User user = userService.SearchUser(id);
         model.addAttribute("user", user);
+        Set<Role> roles = userService.getDefaultRoles();
+        model.addAttribute("roleList", roles);
         return "/admin/edit";
     }
 

@@ -44,6 +44,7 @@ public class UserDaoImp implements UserDao {
         userOur.setLastname(newUser.getLastname());
         userOur.setEmail(newUser.getEmail());
         userOur.setPassword(newUser.getPassword());
+        userOur.setRoles(newUser.getRoles());
     }
 
     @Override
