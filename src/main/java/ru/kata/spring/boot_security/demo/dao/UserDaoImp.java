@@ -13,18 +13,6 @@ import java.util.*;
 @Qualifier("users")
 @Repository
 public class UserDaoImp implements UserDao {
-
-    private static final Set<Role> roleList;
-    private static final User admin;
-
-    static {
-        roleList = new HashSet<>();
-        roleList.add(new Role("ROLE_ADMIN"));
-        roleList.add(new Role("ROLE_USER"));
-
-        admin = new User("admin","admin","admin","admin", roleList);
-    }
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -33,16 +21,13 @@ public class UserDaoImp implements UserDao {
         entityManager.merge(user);
     }
 
-    public Set<Role> getDefaultRoles() {
-        return roleList;
-    }
-
     @Override
     public void update(User newUser, long id) {
         User userOur = SearchUser(id);
         userOur.setUsername(newUser.getUsername());
         userOur.setLastname(newUser.getLastname());
         userOur.setEmail(newUser.getEmail());
+        userOur.setAge(newUser.getAge());
         userOur.setPassword(newUser.getPassword());
         userOur.setRoles(newUser.getRoles());
     }

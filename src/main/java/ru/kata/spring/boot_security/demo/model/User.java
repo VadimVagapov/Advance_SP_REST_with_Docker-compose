@@ -1,6 +1,8 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,14 +30,17 @@ public class User implements UserDetails {
     @Column(name = "lastname")
     private String lastname;
 
+    @Column(name = "age")
+    private Integer age;
+
     @Column(name = "email")
     private String email;
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
-    @Fetch(FetchMode.JOIN)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_role", joinColumns = @JoinColumn(name = "user_id",
             referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id",
             referencedColumnName = "id"))
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Set<Role> roles;
 
     public User() {
@@ -45,12 +50,29 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public User(String username, String lastname, String email, String password, Set<Role> roles) {
+    public User(String username, String lastname, String email, String password, Integer age, Set<Role> roles) {
         this.username = username;
         this.lastname = lastname;
         this.password = password;
+        this.age = age;
         this.email = email;
         this.roles = roles;
+    }
+
+    public String getFirstHello() {
+        String nameRole = "";
+        for(Role role : getRoles()) {
+            nameRole += role.getName().replace("ROLE_", "").concat("  ");
+        }
+        return nameRole;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     @Override

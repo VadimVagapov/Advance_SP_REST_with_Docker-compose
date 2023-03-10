@@ -26,11 +26,6 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public Set<Role> getDefaultRoles() {
-        return userDao.getDefaultRoles();
-    }
-
-    @Override
     public void update(User user, long id) {
         userDao.update(user, id);
     }

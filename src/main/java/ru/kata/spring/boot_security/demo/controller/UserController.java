@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,9 +8,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,14 +20,31 @@ import java.util.Set;
 @Controller
 public class UserController {
 
-    @Autowired
     private UserService userService;
+    private RoleService roleService;
 
-    @GetMapping("/admin")
-    public String home(Model model) {
+    @Autowired
+    public UserController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "/login";
+    }
+
+    @GetMapping("/admin_home")
+    public String adminHome(Principal principal, Model model) {
         List<User> listUsers = userService.getListUsers("-1");
         model.addAttribute("listUsers", listUsers);
-        return "/admin/allUsers";
+        User user = userService.findByUsername(principal.getName()).get(0);
+        model.addAttribute("principal", user);
+        User newUser = new User();
+        model.addAttribute("new_user", newUser);
+        Set<Role> roles = roleService.getAllRole();
+        model.addAttribute("roles", roles);
+        return "/admin/adminHome";
     }
 
     @GetMapping("/user")
@@ -37,59 +55,67 @@ public class UserController {
     }
 
 
-    @GetMapping("/admin/new")
-    public String newUserForm(Model model) {
-        User user = new User();
-        model.addAttribute("user", user);
-        Set<Role> roles = userService.getDefaultRoles();
-        model.addAttribute("roleList", roles);
-        return "admin/new_user";
-    }
-
     @PostMapping(value = "/admin/new")
-    public String saveUser(@ModelAttribute("user") @Validated User user, BindingResult bindingResult) {
+    public String saveUser(@ModelAttribute("user") @Validated User user,
+                           BindingResult bindingResult,
+                           @RequestParam(value = "roles", required = false, defaultValue = "0") long[] rolesId) {
         if (user.getEmail().isEmpty()
                 && user.getUsername().isEmpty()
                 && user.getLastname().isEmpty()
                 && user.getPassword().isEmpty()) {
-            return "redirect:/admin";
+            return "redirect:/admin_home";
         }
 //        userService.validation(user, bindingResult);
 //
 //        if (bindingResult.hasErrors()) {
-//            return "/admin/allUsers";
+//            return "/admin/adminHome";
 //        }
+
+        Set<Role> roles = new HashSet<>();
+
+        if (rolesId.equals("0")) {
+            roles.add(roleService.getRoleById(2));
+        } else {
+            for (long role : rolesId) {
+                roles.add(roleService.getRoleById(role));
+            }
+        }
+        user.setRoles(roles);
         userService.add(user);
-        return "redirect:/admin";
+        return "redirect:/admin_home";
     }
 
-    @RequestMapping(value = "/admin/delete", method = RequestMethod.POST)
-    public String deleteUserForm(@RequestParam(name="id") long id) {
+    @DeleteMapping(value = "/admin/delete{id}")
+    public String deleteUserForm(@PathVariable("id") long id) {
         userService.remove(id);
-        return "redirect:/admin";
+        return "redirect:/admin_home";
     }
 
     @RequestMapping("/admin/edit")
     public String editUserForm(@RequestParam(name="id") long id, Model model) {
         User user = userService.SearchUser(id);
+        Set<Role> roles = roleService.getAllRole();
+        user.setRoles(roles);
         model.addAttribute("user", user);
-        Set<Role> roles = userService.getDefaultRoles();
-        model.addAttribute("roleList", roles);
+        model.addAttribute("roles", roles);
         return "/admin/edit";
     }
 
-    @PatchMapping(value = "/admin/{id}")
-    public String updateUserForm(@ModelAttribute("user") User user, @PathVariable("id") long id) {
-        userService.update(user, id);
-        return "redirect:/admin";
-    }
+    @PatchMapping(value = "/admin/adminHome{id}")
+    public String updateUserForm(@ModelAttribute("user") User user, @PathVariable("id") long id,
+                                 @RequestParam(value = "roles", required = false, defaultValue = "0") long[] rolesId) {
 
-    @RequestMapping("/admin/search")
-    public String getListUsers(@RequestParam(defaultValue = "0") String keyword, Model model) {
-        if (keyword.equals("0")) {
-            return "redirect:/admin";
+        Set<Role> roles = new HashSet<>();
+        if (rolesId.equals("0")) {
+            roles.add(roleService.getRoleById(2));
+        } else {
+            for (long role : rolesId) {
+                roles.add(roleService.getRoleById(role));
+            }
         }
-        model.addAttribute("users", userService.getListUsers(keyword));
-        return "/admin/users";
+
+        user.setRoles(roles);
+        userService.update(user, id);
+        return "redirect:/admin_home";
     }
 }

@@ -16,5 +16,4 @@ public interface UserDao {
     User SearchUser(long id);
     void remove(long id);
     List<User> getListUsers(String count);
-    Set<Role> getDefaultRoles();
 }

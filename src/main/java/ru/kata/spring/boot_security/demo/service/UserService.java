@@ -20,5 +20,4 @@ public interface UserService {
 
     void validation(User user, Errors errors);
 
-    Set<Role> getDefaultRoles();
 }
