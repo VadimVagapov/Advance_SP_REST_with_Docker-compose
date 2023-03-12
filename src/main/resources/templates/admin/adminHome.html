@@ -174,7 +174,7 @@
                                                                 <div class="form-group mb-2">
                                                                     <label for="editModalAge"
                                                                            class="form-label fw-bold">Age</label>
-                                                                    <input type="text"
+                                                                    <input type="number"
                                                                            name="age"
                                                                            th:value="${user.age}"
                                                                            class="form-control"
@@ -184,7 +184,7 @@
                                                                 <div class="form-group mb-2">
                                                                     <label for="editModalEmail"
                                                                            class="form-label fw-bold">E-mail</label>
-                                                                    <input type="text"
+                                                                    <input type="email"
                                                                            name="email"
                                                                            th:value="${user.email}"
                                                                            class="form-control"
@@ -194,7 +194,7 @@
                                                                 <div class="form-group mb-2">
                                                                     <label for="editModalPass"
                                                                            class="form-label fw-bold">Password</label>
-                                                                    <input type="text"
+                                                                    <input type="password"
                                                                            name="password"
                                                                            th:value="${user.password}"
                                                                            class="form-control"
@@ -291,7 +291,7 @@
                                                                 <div class="form-group mb-2">
                                                                     <label for="dModalAge"
                                                                            class="form-label fw-bold">Age</label>
-                                                                    <input type="text"
+                                                                    <input type="number"
                                                                            name="age"
                                                                            th:value="${user.age}"
                                                                            class="form-control"
@@ -301,7 +301,7 @@
                                                                 <div class="form-group mb-2">
                                                                     <label for="dModalEmail"
                                                                            class="form-label fw-bold">E-mail</label>
-                                                                    <input type="text"
+                                                                    <input type="email"
                                                                            name="email"
                                                                            th:value="${user.email}"
                                                                            class="form-control"
@@ -311,7 +311,7 @@
                                                                 <div class="form-group mb-2">
                                                                     <label for="dModalPass"
                                                                            class="form-label fw-bold">Password</label>
-                                                                    <input type="text"
+                                                                    <input type="password"
                                                                            name="password"
                                                                            th:value="${user.password}"
                                                                            class="form-control"
@@ -391,7 +391,7 @@
                                                 <strong><label class="col-md-8 control-label"
                                                                for="age">Age</label></strong>
                                                 <div class="col-md-16" style="width: 300px;">
-                                                    <input id="age" name="age" type="text" placeholder="Age"
+                                                    <input id="age" name="age" type="number" placeholder="Age"
                                                            class="form-control input-md" th:field="*{age}">
                                                 </div>
                                             </div>
@@ -401,7 +401,7 @@
                                                 <strong><label class="col-md-8 control-label"
                                                                for="email">Email</label></strong>
                                                 <div class="col-md-16" style="width: 300px;">
-                                                    <input id="email" name="email" type="text" placeholder="E-mail"
+                                                    <input id="email" name="email" type="email" placeholder="E-mail"
                                                            class="form-control input-md" th:field="*{email}">
                                                 </div>
                                             </div>
@@ -411,7 +411,7 @@
                                                 <strong><label class="col-md-8 control-label"
                                                                for="password">Password</label></strong>
                                                 <div class="col-md-16" style="width: 300px;">
-                                                    <input id="password" name="password" type="text"
+                                                    <input id="password" name="password" type="password"
                                                            placeholder="Password" class="form-control input-md"
                                                            th:field="*{password}">
                                                 </div>

@@ -62,10 +62,13 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByUsername(username).get(0);
-        if(user == null) {
+        if(findByUsername(username).size() == 0) {
             throw new UsernameNotFoundException("User not found");
         }
+        User user = findByUsername(username).get(0);
+//        if(user == null) {
+//
+//        }
         return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(), user.getAuthorities());
     }
 }
