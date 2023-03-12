@@ -58,22 +58,22 @@ public class UserController {
     @PostMapping(value = "/admin/new")
     public String saveUser(@ModelAttribute("user") @Validated User user,
                            BindingResult bindingResult,
-                           @RequestParam(value = "roles", required = false, defaultValue = "0") long[] rolesId) {
+                           @RequestParam(value = "roles", required = false) long[] rolesId) {
         if (user.getEmail().isEmpty()
                 && user.getUsername().isEmpty()
                 && user.getLastname().isEmpty()
                 && user.getPassword().isEmpty()) {
             return "redirect:/admin_home";
         }
-//        userService.validation(user, bindingResult);
-//
-//        if (bindingResult.hasErrors()) {
-//            return "/admin/adminHome";
-//        }
+        userService.validation(user, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "redirect:/admin_home";
+        }
 
         Set<Role> roles = new HashSet<>();
 
-        if (rolesId.equals("0")) {
+        if (rolesId == null) {
             roles.add(roleService.getRoleById(2));
         } else {
             for (long role : rolesId) {
@@ -103,11 +103,12 @@ public class UserController {
 
     @PatchMapping(value = "/admin/adminHome{id}")
     public String updateUserForm(@ModelAttribute("user") User user, @PathVariable("id") long id,
-                                 @RequestParam(value = "roles", required = false, defaultValue = "0") long[] rolesId) {
+                                 @RequestParam(value = "roles", required = false) long[] rolesId) {
 
         Set<Role> roles = new HashSet<>();
-        if (rolesId.equals("0")) {
-            roles.add(roleService.getRoleById(2));
+        if (rolesId == null) {
+            User findUser = userService.findByUsername(user.getUsername()).get(0);
+            roles = findUser.getRoles();
         } else {
             for (long role : rolesId) {
                 roles.add(roleService.getRoleById(role));

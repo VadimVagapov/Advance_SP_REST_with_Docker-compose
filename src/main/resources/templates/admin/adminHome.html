@@ -137,8 +137,7 @@
                                                         <div class="modal-body text-center d-flex justify-content-center">
                                                             <form th:method="PATCH"
                                                                   th:action="@{/admin/adminHome{id}(id=${user.id})}"
-                                                                  th:with="editedUser = ${user}"
-                                                                  th:object="${editedUser}"
+                                                                  th:object="${user}"
                                                                   id="editModalForm">
 
                                                                 <div class="form-group mb-2">
@@ -146,7 +145,7 @@
                                                                            class="form-label fw-bold">ID</label>
                                                                     <input type="text"
                                                                            name="id"
-                                                                           th:value="${editedUser.id}"
+                                                                           th:value="${user.id}"
                                                                            class="form-control"
                                                                            id="editModalUserId"
                                                                            readonly/>
@@ -157,7 +156,7 @@
                                                                            class="form-label fw-bold">First Name</label>
                                                                     <input type="text"
                                                                            name="username"
-                                                                           th:value="${editedUser.username}"
+                                                                           th:value="${user.username}"
                                                                            class="form-control"
                                                                            id="editModalFName"/>
                                                                 </div>
@@ -167,7 +166,7 @@
                                                                            class="form-label fw-bold">Last Name</label>
                                                                     <input type="text"
                                                                            name="lastname"
-                                                                           th:value="${editedUser.lastname}"
+                                                                           th:value="${user.lastname}"
                                                                            class="form-control"
                                                                            id="editModalLName"/>
                                                                 </div>
@@ -177,7 +176,7 @@
                                                                            class="form-label fw-bold">Age</label>
                                                                     <input type="text"
                                                                            name="age"
-                                                                           th:value="${editedUser.age}"
+                                                                           th:value="${user.age}"
                                                                            class="form-control"
                                                                            id="editModalAge"/>
                                                                 </div>
@@ -187,7 +186,7 @@
                                                                            class="form-label fw-bold">E-mail</label>
                                                                     <input type="text"
                                                                            name="email"
-                                                                           th:value="${editedUser.email}"
+                                                                           th:value="${user.email}"
                                                                            class="form-control"
                                                                            id="editModalEmail"/>
                                                                 </div>
@@ -197,7 +196,7 @@
                                                                            class="form-label fw-bold">Password</label>
                                                                     <input type="text"
                                                                            name="password"
-                                                                           th:value="${editedUser.password}"
+                                                                           th:value="${user.password}"
                                                                            class="form-control"
                                                                            id="editModalPass"/>
                                                                 </div>
@@ -205,14 +204,12 @@
 
                                                                 <div class="form-group mb-2">
                                                                     <label class="form-label fw-bold"
-                                                                           for="roles">Role</label>
+                                                                           >Role</label>
                                                                     <select class="w-100"
-                                                                            multiple="multiple" size="2" name="roles"
-                                                                            id="roles" required>
+                                                                            multiple="multiple" size="2" name="roles">
                                                                         <option th:each="role : ${roles}"
                                                                                 th:value="${role.id}"
-                                                                                th:text="${role.name.replace('ROLE_', '')}"
-                                                                                th:selected="${editedUser.roles.contains(role)}">
+                                                                                th:text="${role.name.replace('ROLE_', '')}">
                                                                         </option>
                                                                     </select>
                                                                 </div>
@@ -256,8 +253,7 @@
                                                         <div class="modal-body text-center d-flex justify-content-center">
                                                             <form th:method="DELETE"
                                                                   th:action="@{/admin/delete{id}(id=${user.id})}"
-                                                                  th:with="editedUser = ${user}"
-                                                                  th:object="${editedUser}"
+                                                                  th:object="${user}"
                                                                   id="deleteModalForm">
 
                                                                 <div class="form-group mb-2">
@@ -265,7 +261,7 @@
                                                                            class="form-label fw-bold">ID</label>
                                                                     <input type="text"
                                                                            name="id"
-                                                                           th:value="${editedUser.id}"
+                                                                           th:value="${user.id}"
                                                                            class="form-control"
                                                                            id="deleteModalUserId"
                                                                            readonly/>
@@ -276,7 +272,7 @@
                                                                            class="form-label fw-bold">First Name</label>
                                                                     <input type="text"
                                                                            name="id"
-                                                                           th:value="${editedUser.username}"
+                                                                           th:value="${user.username}"
                                                                            class="form-control"
                                                                            id="deleteModalUserFName"
                                                                            readonly/>
@@ -287,7 +283,7 @@
                                                                            class="form-label fw-bold">Last Name</label>
                                                                     <input type="text"
                                                                            name="lastname"
-                                                                           th:value="${editedUser.lastname}"
+                                                                           th:value="${user.lastname}"
                                                                            class="form-control"
                                                                            id="dModalLName" readonly/>
                                                                 </div>
@@ -297,7 +293,7 @@
                                                                            class="form-label fw-bold">Age</label>
                                                                     <input type="text"
                                                                            name="age"
-                                                                           th:value="${editedUser.age}"
+                                                                           th:value="${user.age}"
                                                                            class="form-control"
                                                                            id="dModalAge" readonly/>
                                                                 </div>
@@ -307,7 +303,7 @@
                                                                            class="form-label fw-bold">E-mail</label>
                                                                     <input type="text"
                                                                            name="email"
-                                                                           th:value="${editedUser.email}"
+                                                                           th:value="${user.email}"
                                                                            class="form-control"
                                                                            id="dModalEmail" readonly/>
                                                                 </div>
@@ -317,7 +313,7 @@
                                                                            class="form-label fw-bold">Password</label>
                                                                     <input type="text"
                                                                            name="password"
-                                                                           th:value="${editedUser.password}"
+                                                                           th:value="${user.password}"
                                                                            class="form-control"
                                                                            id="dModalPass" readonly/>
                                                                 </div>
@@ -328,7 +324,7 @@
                                                                     <select class="w-100"
                                                                             multiple="multiple" size="2" required
                                                                             disabled>
-                                                                        <option th:each="role : ${editedUser.roles}"
+                                                                        <option th:each="role : ${user.roles}"
                                                                                 th:text="${role.name.replace('ROLE_', '')}"
                                                                                 disabled>
                                                                         </option>
@@ -339,9 +335,8 @@
                                                                     <button type="button" class="btn btn-secondary"
                                                                             data-bs-dismiss="modal">Close
                                                                     </button>
-                                                                    <button type="submit" class="btn btn-danger">
-                                                                        Delete
-                                                                    </button>
+                                                                    <input class="btn btn-danger" type="submit"
+                                                                           value="Delete"/>
                                                                 </div>
                                                             </form>
                                                         </div>
