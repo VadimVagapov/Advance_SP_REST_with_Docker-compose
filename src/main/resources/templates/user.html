@@ -21,10 +21,9 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12 p-2 bg-dark text-white ">
-                    <a th:text="${user.username}" class="font-weight-bold text-white" id="headerUsername"></a>
+                    <a id="authUserName" class="font-weight-bold text-white" ></a>
                     <a> with roles:</a>
-                    <a>
-                        <span th:text="${user.getFirstHello()}"></span></a>
+                    <a><span id="authRoles"></span></a>
                     <a th:href="@{/logout}" class="float-right text-secondary"> Logout </a>
                 </div>
             </div>
@@ -39,9 +38,10 @@
         <div class="row">
             <div class="col-2 p-0 mt-2">
                 <ul class="nav nav-pills flex-column mb-auto">
-                    <li th:each="autRole : ${user.getAuthorities()}"
-                        th:if="${autRole.getName().contains('ROLE_ADMIN')}" class="nav-item">
-                        <a th:href="@{/admin_home}" class="nav-link link-dark"
+<!--                    <li th:if = "thisIsAdmin()" class="nav-item">-->
+                    <li th:each="autRole : ${user.getRoles()}"
+                        th:if="${autRole.getAuthority().contains('ROLE_ADMIN')}" class="nav-item">
+                        <a th:href="@{/admin}" class="nav-link link-dark"
                            aria-current="page">
                             Admin
                         </a>
@@ -82,20 +82,10 @@
                                         <th>Age</th>
                                         <th>E-mail</th>
                                         <th>Role</th>
+
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td><span th:text="${user.id}"> ID </span></td>
-                                        <td><span th:text="${user.username}"> First Name </span></td>
-                                        <td><span th:text="${user.lastname}"> Last Name </span></td>
-                                        <td><span th:text="${user.age}"> Age </span></td>
-                                        <td><span th:text="${user.email}"> E-mail </span></td>
-                                        <td><a th:each="role: ${user.getRoles()}"
-                                               th:text="${role.getName.replace('ROLE_', '').concat('  ')}"></a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
+                                    <tbody id="authUser"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -105,6 +95,8 @@
         </div>
     </div>
 </SECTION>
+
+<script type="text/javascript" src="/static/user.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

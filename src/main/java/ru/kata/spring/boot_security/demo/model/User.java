@@ -1,20 +1,14 @@
 package ru.kata.spring.boot_security.demo.model;
 
-
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Set;
+import java.util.List;
+
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
 
     @Id
     @Column(name = "id")
@@ -41,75 +35,21 @@ public class User implements UserDetails {
             referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id",
             referencedColumnName = "id"))
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private Set<Role> roles;
+    private List<Role> roles;
 
     public User() {
     }
 
-    public User(Set<Role> roles) {
+    public User(List<Role> roles) {
         this.roles = roles;
     }
 
-    public User(String username, String lastname, String email, String password, Integer age, Set<Role> roles) {
+    public User(String username, String lastname, String email, String password, Integer age, List<Role> roles) {
         this.username = username;
         this.lastname = lastname;
         this.password = password;
         this.age = age;
         this.email = email;
-        this.roles = roles;
-    }
-
-    public String getFirstHello() {
-        String nameRole = "";
-        for(Role role : getRoles()) {
-            nameRole += role.getName().replace("ROLE_", "").concat("  ");
-        }
-        return nameRole;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
@@ -129,6 +69,10 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -141,6 +85,14 @@ public class User implements UserDetails {
         this.lastname = lastname;
     }
 
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -149,15 +101,11 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "User { " +
-                "id = " + id +
-                ", password = '" + password + '\'' +
-                ", username = '" + username + '\'' +
-                ", lastname = '" + lastname + '\'' +
-                ", email = '" + email + '\'' +
-                ", roles = " + roles +
-                '}';
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

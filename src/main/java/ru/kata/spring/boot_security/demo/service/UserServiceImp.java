@@ -6,43 +6,51 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
-import ru.kata.spring.boot_security.demo.dao.UserDao;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repository.UserRepository;
+import ru.kata.spring.boot_security.demo.security.MyUserDetails;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
+
 
 @Service
 @Transactional
 public class UserServiceImp implements UserService, UserDetailsService {
 
-    @Autowired private UserDao userDao;
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Override
     public void add(User user) {
-        userDao.add(user);
-    }
-
-    @Override
-    public void update(User user, long id) {
-        userDao.update(user, id);
+        userRepository.save(user);
     }
 
     @Override
     public User SearchUser(long id) {
-        return userDao.SearchUser(id);
+        User user = null;
+        Optional<User> opti = userRepository.findById(id);
+        if(opti.isPresent()) {
+            user = opti.get();
+        }
+        return user;
     }
 
     @Override
-    public List<User> findByUsername(String name) {
-        return userDao.findByUsername(name);
+    public User findByUsername(String name) {
+        return userRepository.findUserByUsername(name);
     }
 
     @Override
     public void remove(long id) {
-        userDao.remove(id);
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
@@ -56,19 +64,12 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<User> getListUsers(String count) {
-        return userDao.getListUsers(count);
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if(findByUsername(username).size() == 0) {
+        User user = findByUsername(username);
+        if(user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        User user = findByUsername(username).get(0);
-//        if(user == null) {
-//
-//        }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(), user.getAuthorities());
+        return new MyUserDetails(user);
+        //return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(), user.getAuthorities());
     }
 }
