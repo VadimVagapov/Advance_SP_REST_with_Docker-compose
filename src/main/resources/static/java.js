@@ -21,21 +21,15 @@ async function getAllUsers() {
 
     length = user.length;
     console.log(user);
-    var temp = "";
+    let temp = "";
     for (i = 0; i < length; i++) {
-        let roles = '';
-        let lengthRole = user[i].roles.length
-        for (j = 0; j < lengthRole; j++) {
-            roles += user[i].roles[j].authority.replace('ROLE_', '').concat(' ')
-        }
-
         temp += `<tr>
         <td>${user[i].id}</td>
         <td>${user[i].username}</td>
         <td>${user[i].lastname}</td>
         <td>${user[i].age}</td>
         <td>${user[i].email}</td>
-        <td>${roles}</td>
+        <td>${stringRoles(user[i])}</td>
         <td><button type="button" class="btn btn-info" className data-bs-toggle="modal"  data-bs-target="#editModal" onClick="editModal(${user[i].id})">Edit</button></td>
         <td><button type="button" class="btn btn-danger" className data-bs-toggle="modal" data-bs-target="#deleteModal" onClick="deleteModal(${user[i].id})">Delete</button></td>
         </tr>`
@@ -45,7 +39,7 @@ async function getAllUsers() {
 
 //получение пользователя для редактирования
 async function editModal(id) {
-    fetch(url + id, {
+    await fetch(url + id, {
         method: "GET",
         headers: {
             'Content-Type': 'application/json; charset=UTF-8'
@@ -64,10 +58,12 @@ async function editModal(id) {
                     if (user.roles.length === 2) {
                         document.getElementById('adminEdit').setAttribute('selected', 'true');
                         document.getElementById('userEdit').setAttribute('selected', 'true');
-                    } else if (user.roles.length === 1 && (user.roles[0].id === 1)) {
+                    } else if (user.roles[0].id === 1) {
                         document.getElementById('adminEdit').setAttribute('selected', 'true');
-                    } else if (user.roles.length === 1 && (user.roles[0].id === 2)) {
+                        document.getElementById('userEdit').setAttribute('selected', 'false');
+                    } else if (user.roles[0].id === 2) {
                         document.getElementById('userEdit').setAttribute('selected', 'true');
+                        document.getElementById('adminEdit').setAttribute('selected', 'false');
                     }
                 })
         })
@@ -83,7 +79,7 @@ editUserForm.addEventListener('submit', async (e) => {
     let ageEdit = document.getElementById("ageEdit").value;
     let emailEdit = document.getElementById("emailEdit").value;
     let passwordEdit = document.getElementById("passwordEdit").value;
-    let rolesEdit = getEditRoles(Array.from(document.getElementById("rolesEdit").selectedOptions).map(role => role.value));
+    let rolesEdit = getAllRoles(Array.from(document.getElementById("rolesEdit").selectedOptions).map(role => role.value));
 
     fetch(url, {
         method: "PUT",
@@ -105,29 +101,12 @@ editUserForm.addEventListener('submit', async (e) => {
             getAllUsers();
             document.getElementById("closeEdit").click();
         })
-
-    function getEditRoles(role) {
-        let roles = [];
-        if (role.indexOf("ADMIN") >= 0) {
-            roles.push({
-                "id": 1,
-                "authority": 'ROLE_ADMIN'
-            });
-        }
-        if (role.indexOf("USER") >= 0) {
-            roles.push({
-                "id": 2,
-                "authority": 'ROLE_USER'
-            });
-        }
-        return roles;
-    }
 });
 
 //получение данных пользователя перед удалением
 async function deleteModal(id) {
 
-    fetch(url + id, {
+    await fetch(url + id, {
         method: "GET",
         headers: {
             'Content-Type': 'application/json; charset=UTF-8'
@@ -147,10 +126,12 @@ async function deleteModal(id) {
                     if (user.roles.length === 2) {
                         document.getElementById('roleAdminDelete').setAttribute('selected', 'true');
                         document.getElementById('roleUserDelete').setAttribute('selected', 'true');
-                    } else if (user.roles.length === 1 && (user.roles.id === 1)) {
+                    } else if (user.roles[0].authority.equals('ROLE_ADMIN')) {
                         document.getElementById('roleAdminDelete').setAttribute('selected', 'true');
-                    } else {
+                        document.getElementById('roleUserDelete').setAttribute('selected', 'false');
+                    } else if(user.roles[0].authority.equals('ROLE_USER')) {
                         document.getElementById('roleUserDelete').setAttribute('selected', 'true');
+                        document.getElementById('roleAdminDelete').setAttribute('selected', 'false');
                     }
                 })
         })
@@ -184,7 +165,7 @@ createUserForm.addEventListener('submit', async (e) => {
     let ageNew = document.getElementById("age").value;
     let emailNew = document.getElementById("email").value;
     let passwordNew = document.getElementById("password").value;
-    let rolesNew = getRoles(Array.from(document.getElementById("selectrole").selectedOptions).map(role => role.value));
+    let rolesNew = getAllRoles(Array.from(document.getElementById("selectrole").selectedOptions).map(role => role.value));
 
     fetch(url, {
         method: "POST",
@@ -205,23 +186,11 @@ createUserForm.addEventListener('submit', async (e) => {
             document.getElementById("nav-table-tab").click();
             getAllUsers();
         })
-
-    function getRoles(role) {
-        let roles = [];
-        if (role.indexOf("ADMIN") >= 0) {
-            roles.push({"id": 1});
-        }
-        if (role.indexOf("USER") >= 0) {
-            roles.push({"id": 2});
-        }
-        return roles;
-    }
 });
 
 //для шапки авторизации
 getAuthoritesUser()
 async function getAuthoritesUser() {
-    let roles = '';
     const response = await fetch(urlPrincipal, {
         method: "GET",
         headers: {
@@ -230,24 +199,38 @@ async function getAuthoritesUser() {
     })
         .then((res) => res.json())
         .then((user) => {
-            let lengthRole = user.roles.length
-            for (j = 0; j < lengthRole; j++) {
-                roles += user.roles[j].authority.replace('ROLE_', '').concat(' ')
-            }
-
-            document.getElementById("authRoles").innerHTML = roles;
+            document.getElementById("authRoles").innerHTML = stringRoles(user);
             document.getElementById("authUserName").innerHTML = user.username;
         })
-
-    function thisIsAdmin() {
-        if(roles.indexOf('ADMIN') >= 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
 
+//получение коротких ролей в одной строке
+ function stringRoles(user) {
+     let roles = '';
+     let lengthRole = user.roles.length
+     for (j = 0; j < lengthRole; j++) {
+         roles += user.roles[j].authority.replace('ROLE_', '').concat(' ')
+     }
+     return roles;
+ }
+
+ //получение ролей для нового пользователя и для редактирования уже существующего
+function getAllRoles(role) {
+    let roles = [];
+    if (role.indexOf("ADMIN") >= 0) {
+        roles.push({
+            "id": 1,
+            "authority": 'ROLE_ADMIN'
+        });
+    }
+    if (role.indexOf("USER") >= 0) {
+        roles.push({
+            "id": 2,
+            "authority": 'ROLE_USER'
+        });
+    }
+    return roles;
+}
 
 
 

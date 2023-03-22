@@ -1,6 +1,8 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.exception.NoSuchUserException;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -23,41 +25,41 @@ public class RestUserControl {
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         List<User> list = userService.getAllUsers();
-        return list;
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/user")
-    public User getUserByUserName(Principal principal) {
+    public ResponseEntity<User> getUserByUserName(Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return user;
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable long id) {
+    public ResponseEntity<User> getUser(@PathVariable long id) {
     User user = userService.SearchUser(id);
     if (user == null) {
         throw new NoSuchUserException(String.format("User with ID = %d not found in Database", id));
     }
-        return user;
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/users")
-    public User addNewUser(@RequestBody User user) {
+    public HttpStatus addNewUser(@RequestBody User user) {
         userService.add(user);
-        return user;
+        return HttpStatus.OK;
     }
 
     @PutMapping("/users")
-    public User updateUser(@RequestBody User user) {
+    public HttpStatus updateUser(@RequestBody User user) {
         userService.add(user);
-        return user;
+        return HttpStatus.OK;
     }
 
     @DeleteMapping("/users/{id}")
-    public String deleteUser(@PathVariable long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable long id) {
         userService.remove(id);
-        return "User with ID = " + id + " was deleted";
+        return new ResponseEntity<>(String.format("User with ID = %d was deleted", id), HttpStatus.OK);
     }
 }
