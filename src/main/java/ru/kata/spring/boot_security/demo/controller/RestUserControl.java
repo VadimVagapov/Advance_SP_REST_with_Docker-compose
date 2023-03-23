@@ -1,12 +1,9 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.exception.NoSuchUserException;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
@@ -16,12 +13,9 @@ import java.util.List;
 @RequestMapping("/api")
 public class RestUserControl {
     private UserService userService;
-    private RoleService roleService;
 
-    @Autowired
-    public RestUserControl(UserService userService, RoleService roleService) {
+    public RestUserControl(UserService userService) {
         this.userService = userService;
-        this.roleService = roleService;
     }
 
     @GetMapping("/users")
@@ -38,17 +32,20 @@ public class RestUserControl {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable long id) {
-    User user = userService.SearchUser(id);
-    if (user == null) {
-        throw new NoSuchUserException(String.format("User with ID = %d not found in Database", id));
-    }
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    User user = userService.searchUser(id);
+    return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    //здесь не получается в валидацию
+    //при создании кажется используется метод PUT хотя в скрипте я прописал что нужен POST метод
     @PostMapping("/users")
-    public HttpStatus addNewUser(@RequestBody User user) {
-        userService.add(user);
-        return HttpStatus.OK;
+    public ResponseEntity<String> addNewUser(@RequestBody User user) {
+        if (userService.findByUsername(user.getUsername()) != null) {
+            return new ResponseEntity<>((String.format("User with name %s exist yet", user.getUsername())), HttpStatus.BAD_REQUEST);
+        } else {
+            userService.add(user);
+            return new ResponseEntity<>("User create", HttpStatus.CREATED);
+        }
     }
 
     @PutMapping("/users")

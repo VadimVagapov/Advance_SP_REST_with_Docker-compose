@@ -1,11 +1,16 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+import ru.kata.spring.boot_security.demo.exception.NoSuchUserException;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.security.MyUserDetails;
@@ -19,23 +24,26 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImp implements UserService, UserDetailsService {
 
-    @Autowired
     private UserRepository userRepository;
 
-
-    @Override
-    public void add(User user) {
-        userRepository.save(user);
+    public UserServiceImp(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public User SearchUser(long id) {
-        User user = null;
-        Optional<User> opti = userRepository.findById(id);
-        if(opti.isPresent()) {
-            user = opti.get();
+    public void add(User user) {
+        userRepository.saveAndFlush(user);
+    }
+
+
+    @Override
+    public User searchUser(long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new NoSuchUserException(String.format("User with ID = %d not found in Database", id));
         }
-        return user;
     }
 
     @Override
@@ -53,23 +61,27 @@ public class UserServiceImp implements UserService, UserDetailsService {
         return userRepository.findAll();
     }
 
+    //метод для проверки на валидацию username при создании нового юзера/ почему то не получается его реализовать(
+    //если такой юзер уже есть то в errors(BindingResult) кладем новую ошибку с полем username а потом бы в контроллере проверили на ее наличие
     @Override
     public void validation(User user, Errors errors) {
+
         try {
+            //если выбрасывается исключение то значит такого пользователя нет и это хорошо
             loadUserByUsername(user.getUsername());
-        } catch (UsernameNotFoundException ignore) {
-            return;
-        }
-        errors.rejectValue("username", "", String.format("User with name %s exist yet", user.getUsername()));
+
+            //и это тогда не будет работать
+            errors.rejectValue("username", "", String.format("User with name %s exist yet", user.getUsername()));
+        } catch (UsernameNotFoundException ignore) {}
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByUsername(username);
-        if(user == null) {
+        Optional<User> user = Optional.ofNullable(findByUsername(username));
+        if(user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        return new MyUserDetails(user);
+        return new MyUserDetails(user.get());
         //return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(), user.getAuthorities());
     }
 }

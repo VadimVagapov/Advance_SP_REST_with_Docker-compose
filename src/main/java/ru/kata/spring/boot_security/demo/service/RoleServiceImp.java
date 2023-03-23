@@ -13,8 +13,11 @@ import java.util.Optional;
 @Transactional
 public class RoleServiceImp implements RoleService {
 
-    @Autowired
     private RoleRepository roleRepository;
+
+    public RoleServiceImp(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     public List<Role> getAllRole() {
         return roleRepository.findAll();
@@ -23,11 +26,10 @@ public class RoleServiceImp implements RoleService {
 
     @Override
     public Role getRoleById(long id) {
-        Role role = null;
         Optional<Role> opti = roleRepository.findById(id);
         if (opti.isPresent()) {
-            role = opti.get();
+            return opti.get();
         }
-        return role;
+        return null;
     }
 }

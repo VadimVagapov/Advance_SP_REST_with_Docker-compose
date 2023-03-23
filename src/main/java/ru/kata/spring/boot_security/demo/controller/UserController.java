@@ -16,12 +16,10 @@ import java.security.Principal;
 public class UserController {
 
     private UserService userService;
-    private RoleService roleService;
 
-    @Autowired
-    public UserController(UserService userService, RoleService roleService) {
+
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.roleService = roleService;
     }
 
     @GetMapping("/login")
