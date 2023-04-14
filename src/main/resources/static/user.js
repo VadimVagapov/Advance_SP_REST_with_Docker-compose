@@ -33,10 +33,10 @@ async function getAuthoritesUser() {
     let getContent = document.getElementById('hasRole');
     let content;
 
-    if  (roles.indexOf('ADMIN')) {
+    if  (roles.indexOf("ADMIN") >= 0) {
         content = `<ul class="nav nav-pills flex-column mb-auto" id="navbar_principal">
                     <li class="nav-item">
-                        <a th:href="@{/admin}" class="nav-link link-dark" aria-current="page">Admin</a></li>
+                        <a th:href="@{/admin}" class="nav-link link-dark" >Admin</a></li>
                     <li class="nav-item">
                         <a th:href="@{/user}" class="nav-link active">User</a></li></ul>`;
     }

@@ -170,8 +170,8 @@
 
                                                     <select id="selectrole" class="w-100"
                                                             multiple="multiple" size="2" name="selectrole">
-                                                        <option id="roleAdmin" value="ADMIN"></option>
-                                                        <option id="roleUser" value="USER"></option>
+                                                        <option id="roleAdmin" value="ADMIN">ADMIN</option>
+                                                        <option id="roleUser" value="USER">USER</option>
                                                     </select>
 
                                                 </div>
@@ -266,18 +266,25 @@
                                id="passwordEdit"/>
 
                         <br>
-                        <div>
-                            <label for="rolesEdit" class="form-label fw-bold"
-                            >Role</label>
-                            <select id="rolesEdit" class="w-100"
-                                    multiple="multiple" size="2" name="rolesEdit">
-                                <option id="adminEdit" value="ADMIN">ADMIN</option>
-                                <option id="userEdit" value="USER">USER</option>
-                            </select>
 
-                            <br>
 
+                        <div class="form-label fw-bold">
+                            <strong><label class="col-md-8 control-label"
+                                           for="rolesEdit">Role</label></strong>
+                            <div class="col-md-16" style="width: 300px;">
+
+                                <select id="rolesEdit" class="w-100"
+                                        multiple="multiple" size="2" name="rolesEdit">
+                                    <option id="adminEdit" value="ADMIN">ADMIN</option>
+                                    <option id="userEdit" value="USER">USER</option>
+                                </select>
+
+                            </div>
                         </div>
+
+
+
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -388,7 +395,7 @@
     </div>
 </div>
 
-<script type="text/javascript" src="/admin.js"></script>
+<script type="text/javascript" src="/static/admin.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

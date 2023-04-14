@@ -79,7 +79,7 @@ editUserForm.addEventListener('submit', async (e) => {
     let ageEdit = document.getElementById("ageEdit").value;
     let emailEdit = document.getElementById("emailEdit").value;
     let passwordEdit = document.getElementById("passwordEdit").value;
-    let rolesEdit = getAllRoles(Array.from(document.getElementById("rolesEdit").selectedOptions).map(role => role.value));
+    let roleEdit = getAllRoles(Array.from(document.getElementById("rolesEdit").selectedOptions).map(role => role.value));
 
     fetch(url, {
         method: "PUT",
@@ -93,7 +93,7 @@ editUserForm.addEventListener('submit', async (e) => {
             age: ageEdit,
             email: emailEdit,
             password: passwordEdit,
-            roles: rolesEdit
+            roles: roleEdit
         })
     })
         .then(() => {

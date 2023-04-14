@@ -11,11 +11,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.kata.spring.boot_security.demo.exception.NoSuchUserException;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.security.MyUserDetails;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +47,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
             throw new NoSuchUserException(String.format("User with ID = %d not found in Database", id));
         }
     }
+
 
     @Override
     public User findByUsername(String name) {

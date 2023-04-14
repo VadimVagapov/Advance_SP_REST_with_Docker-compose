@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
@@ -13,8 +14,10 @@ import java.util.List;
 @RequestMapping("/api")
 public class RestUserControl {
     private UserService userService;
+    private RoleService roleService;
 
-    public RestUserControl(UserService userService) {
+    public RestUserControl(UserService userService, RoleService roleService) {
+        this.roleService = roleService;
         this.userService = userService;
     }
 
@@ -32,8 +35,8 @@ public class RestUserControl {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable long id) {
-    User user = userService.searchUser(id);
-    return new ResponseEntity<>(user, HttpStatus.OK);
+        User user = userService.searchUser(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     //здесь не получается в валидацию
@@ -50,6 +53,10 @@ public class RestUserControl {
 
     @PutMapping("/users")
     public HttpStatus updateUser(@RequestBody User user) {
+        if (user.getRoles().size() == 0) {
+            user.setRoles(userService.findByUsername(user.getUsername()).getRoles());
+        }
+        user.setRoles(roleService.searchRolesOnUser(user.getRoles()));
         userService.add(user);
         return HttpStatus.OK;
     }

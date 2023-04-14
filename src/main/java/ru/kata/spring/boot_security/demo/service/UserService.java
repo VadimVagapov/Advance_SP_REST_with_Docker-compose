@@ -10,6 +10,7 @@ public interface UserService {
 
     User searchUser(long id);
 
+
     User findByUsername(String name);
     void remove(long id);
     List<User> getAllUsers();

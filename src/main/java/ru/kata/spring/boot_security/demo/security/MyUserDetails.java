@@ -1,9 +1,11 @@
 package ru.kata.spring.boot_security.demo.security;
 
+import org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.kata.spring.boot_security.demo.model.User;
 
+import java.security.Principal;
 import java.util.Collection;
 
 public class MyUserDetails implements UserDetails {

@@ -1,6 +1,8 @@
 package ru.kata.spring.boot_security.demo.model;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -30,11 +32,12 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "users_role", joinColumns = @JoinColumn(name = "user_id",
             referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id",
             referencedColumnName = "id"))
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Role> roles;
 
     public User() {

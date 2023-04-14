@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.configs;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -27,7 +29,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder())
+                .and()
+                .inMemoryAuthentication()
+                .withUser("Vadim")
+                .password("123")
+                .authorities("ROLE_ADMIN");
     }
 
     @Bean
@@ -35,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return NoOpPasswordEncoder.getInstance();
 //        return new BCryptPasswordEncoder();
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

@@ -25,6 +25,9 @@
                     <a> with roles:</a>
                     <a><span id="authRoles"></span></a>
                     <a th:href="@{/logout}" class="float-right text-secondary"> Logout </a>
+                    <input type="hidden"
+                           name="${_csrf.parameterName}"
+                           value="${_csrf.token}"/>
                 </div>
             </div>
         </div>
