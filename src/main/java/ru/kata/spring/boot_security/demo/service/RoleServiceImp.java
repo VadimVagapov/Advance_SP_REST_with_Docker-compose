@@ -39,6 +39,12 @@ public class RoleServiceImp implements RoleService {
     }
 
     @Override
+    public void addRolesAfterStart() {
+        roleRepository.save(new Role(1L, "ROLE_ADMIN"));
+        roleRepository.save(new Role(2L, "ROLE_USER"));
+    }
+
+    @Override
     public Role getRoleById(long id) {
         Optional<Role> opti = roleRepository.findById(id);
         if (opti.isPresent()) {

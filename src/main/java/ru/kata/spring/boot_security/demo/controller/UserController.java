@@ -28,14 +28,14 @@ public class UserController {
 
     @GetMapping("/login")
     public String loginPage() {
-        return "/login";
+        return "login";
     }
 
     @RequestMapping("/admin")
     public String admin(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("principal", user);
-        return "/admin";
+        return "admin";
     }
 
     @GetMapping("/user")

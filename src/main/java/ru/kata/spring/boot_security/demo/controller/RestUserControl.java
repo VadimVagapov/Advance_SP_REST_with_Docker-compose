@@ -43,6 +43,9 @@ public class RestUserControl {
     //при создании кажется используется метод PUT хотя в скрипте я прописал что нужен POST метод
     @PostMapping("/users")
     public ResponseEntity<String> addNewUser(@RequestBody User user) {
+        if (roleService.getAllRole().size() == 0) {
+            roleService.addRolesAfterStart();
+        }
         if (userService.findByUsername(user.getUsername()) != null) {
             return new ResponseEntity<>((String.format("User with name %s exist yet", user.getUsername())), HttpStatus.BAD_REQUEST);
         } else {

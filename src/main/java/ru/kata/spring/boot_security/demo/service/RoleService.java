@@ -6,6 +6,8 @@ import java.util.List;
 public interface RoleService {
     Role getRoleById(long id);
 
+    void addRolesAfterStart();
+
     List<Role> searchRolesOnUser(List<Role> listBefore);
 
     List<Role> getAllRole();

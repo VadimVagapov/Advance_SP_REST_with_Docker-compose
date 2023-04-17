@@ -1,0 +1,38 @@
+version: '3'
+
+networks:
+  mynet:
+
+services:
+  mysql-server:
+    image: 'mysql:8.0.32'
+    container_name: 'mysql-server'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=root'
+      - 'MYSQL_HOST_AUTH_METHOD=trust'
+      - 'MYSQL_DATABASE=rest-db'
+    ports:
+      - '3310:3306'
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 20
+    networks:
+      - 'mynet'
+
+  app:
+    build:
+      context: .
+      dockerfile: 'Dockerfile'
+    container_name: 'java-app'
+    restart: 'always'
+    ports:
+      - '8080:8080'
+    environment:
+      - 'SPRING_DATASOURCE_URL: jdbc:mysql://mysql-server:3306/rest-db?autoReconnect=true&useSSL=false'
+    links:
+      - 'mysql-server:my-database'
+    depends_on:
+      - 'mysql-server'
+    networks:
+      - 'mynet'
