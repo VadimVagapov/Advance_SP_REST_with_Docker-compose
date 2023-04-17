@@ -30,7 +30,7 @@ public class RoleServiceImp implements RoleService {
         List<Role> listAfter = new ArrayList<>();
         if (listBefore.size() == 2) {
             return getAllRole();
-        } else if (listBefore.get(0).getAuthority().equals("ROLE_ADMIN")) {
+        } else if (listBefore.get(0).getId() == 1) {
             listAfter.add(getRoleById(1));
         } else {
             listAfter.add(getRoleById(2));
